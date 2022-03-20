@@ -180,6 +180,10 @@ public class UnityAds extends AndroidNonvisibleComponent implements IUnityAdsLoa
     public Object DynamicSize(){
         return UnityBannerSize.getDynamicSize(context);
     }
+    @SimpleFunction
+    public Object NormalSize(){
+        return new UnityBannerSize(320, 50);
+    }
     @Override
     public void onUnityAdsAdLoaded(String adUnitId) {
         AdLoaded(adUnitId);
