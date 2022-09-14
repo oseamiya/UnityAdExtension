@@ -7,7 +7,7 @@ description: Unity Ads Extension By Oseamiya. <br><a href="https://www.github.co
 
 version:
   number: auto
-  name: '1'
+  name: '2'
 
 authors:
   - oseamiya
@@ -28,7 +28,7 @@ assets:
 
 
 deps:
-  - unityads401.jar
+  - unityads404.jar
   - unity-scaradapter-1920.jar
   - unity-scaradapter-1950.jar
   - unity-scaradapter-2000.jar
