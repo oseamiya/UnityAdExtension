@@ -18,19 +18,20 @@ import com.unity3d.services.banners.BannerErrorInfo;
 import com.unity3d.services.banners.BannerView;
 import com.unity3d.services.banners.UnityBannerSize;
 
-public class UnityAds extends AndroidNonvisibleComponent implements IUnityAdsLoadListener, IUnityAdsShowListener, BannerView.IListener{
+public class UnityAds extends AndroidNonvisibleComponent implements IUnityAdsLoadListener, IUnityAdsShowListener, BannerView.IListener {
     private final Context context;
     private final Activity activity;
     private String gameId;
     private boolean testMode = false;
     private BannerView theBannerView;
+
     public UnityAds(ComponentContainer container) {
         super(container.$form());
         context = container.$context();
         activity = (Activity) container.$context();
     }
 
-    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "false")
+    @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BOOLEAN, defaultValue = "False")
     @SimpleProperty
     public void TestMode(boolean value) {
         this.testMode = value;
@@ -54,71 +55,75 @@ public class UnityAds extends AndroidNonvisibleComponent implements IUnityAdsLoa
 
     // Events on initialization
     @SimpleEvent
-    public void InitializationComplete(){
+    public void InitializationComplete() {
         EventDispatcher.dispatchEvent(this, "InitializationComplete");
     }
 
     @SimpleEvent
-    public void InitializationFailed(String message){
+    public void InitializationFailed(String message) {
         EventDispatcher.dispatchEvent(this, "InitializationFailed", message);
     }
 
     // Events on ad loading
     @SimpleEvent
-    public void AdLoaded(String adUnitId){
+    public void AdLoaded(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "AdLoaded", adUnitId);
     }
 
     @SimpleEvent
-    public void AdFailedToLoad(String adUnitId, String message){
-        EventDispatcher.dispatchEvent(this, "AdFailedToLoad", message);
+    public void AdFailedToLoad(String adUnitId, String message) {
+        EventDispatcher.dispatchEvent(this, "AdFailedToLoad", adUnitId, message);
     }
 
     // Events on ads showing
     @SimpleEvent
-    public void AdShowFailed(String adUnitId, String message){
+    public void AdShowFailed(String adUnitId, String message) {
         EventDispatcher.dispatchEvent(this, "AdShowFailed", adUnitId, message);
     }
 
     @SimpleEvent
-    public void AdShowStarted(String adUnitId){
+    public void AdShowStarted(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "AdShowStarted", adUnitId);
     }
 
     @SimpleEvent
-    public void AdShowClicked(String adUnitId){
+    public void AdShowClicked(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "AdShowClicked", adUnitId);
     }
 
     @SimpleEvent
-    public void AdShowCompleted(String adUnitId){
+    public void AdShowCompleted(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "AdShowCompleted", adUnitId);
     }
 
     @SimpleEvent
-    public void AdShowSkipped(String adUnitId){
+    public void AdShowSkipped(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "AdShowSkipped", adUnitId);
     }
 
     // Events on banner ad status
     @SimpleEvent
-    public void BannerFailedToLoad(String adUnitId,String error){
+    public void BannerFailedToLoad(String adUnitId, String error) {
         EventDispatcher.dispatchEvent(this, "BannerFailedToLoad", adUnitId, error);
     }
+
     @SimpleEvent
-    public void BannerClicked(String adUnitId){
+    public void BannerClicked(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "BannerClicked", adUnitId);
     }
+
     @SimpleEvent
-    public void BannerLoaded(String adUnitId){
+    public void BannerLoaded(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "BannerLoaded", adUnitId);
     }
+
     @SimpleEvent
-    public void BannerLeftApplication(String adUnitId){
+    public void BannerLeftApplication(String adUnitId) {
         EventDispatcher.dispatchEvent(this, "BannerLeftApplication", adUnitId);
     }
+
     @SimpleFunction
-    public void Initialize(){
+    public void Initialize() {
         com.unity3d.ads.UnityAds.initialize(this.context, this.gameId, this.testMode, new IUnityAdsInitializationListener() {
             @Override
             public void onInitializationComplete() {
@@ -134,56 +139,62 @@ public class UnityAds extends AndroidNonvisibleComponent implements IUnityAdsLoa
 
     // To integrate Interstitial ads
     @SimpleFunction
-    public void LoadInterstitialAd(String adUnitId){
+    public void LoadInterstitialAd(String adUnitId) {
         com.unity3d.ads.UnityAds.load(adUnitId, this);
     }
 
     @SimpleFunction
-    public void ShowInterstitialAd(String adUnitId){
+    public void ShowInterstitialAd(String adUnitId) {
         com.unity3d.ads.UnityAds.show(this.activity, adUnitId, this);
     }
 
     // Implementing rewarded ads
     @SimpleFunction
-    public void LoadRewardedAd(String adUnitId){
+    public void LoadRewardedAd(String adUnitId) {
         com.unity3d.ads.UnityAds.load(adUnitId, this);
     }
+
     @SimpleFunction
-    public void ShowRewardedAd(String adUnitId){
+    public void ShowRewardedAd(String adUnitId) {
         com.unity3d.ads.UnityAds.show(activity, adUnitId, new UnityAdsShowOptions(), this);
     }
 
     // Implementing banner ads
     @SimpleFunction
-    public void LoadBannerAd(String adUnitId, Object size){
-        if(size instanceof UnityBannerSize) {
+    public void LoadBannerAd(String adUnitId, Object size) {
+        if (size instanceof UnityBannerSize) {
             theBannerView = new BannerView(activity, adUnitId, (UnityBannerSize) size);
             theBannerView.setListener(this);
             theBannerView.load();
-        }else{
+        } else {
             throw new YailRuntimeError("Size not found", "RuntimeError");
         }
     }
+
     @SimpleFunction
-    public void ShowBannerAd(AndroidViewComponent in){
+    public void ShowBannerAd(AndroidViewComponent in) {
         ViewGroup viewGroup = (ViewGroup) in.getView();
-        if(theBannerView.getParent() != null){
+        if (theBannerView.getParent() != null) {
             ((ViewGroup) theBannerView.getParent()).removeView(theBannerView);
         }
         viewGroup.addView(theBannerView);
     }
+
     @SimpleFunction
-    public Object CustomSize(int width, int height){
+    public Object CustomSize(int width, int height) {
         return new UnityBannerSize(width, height);
     }
+
     @SimpleProperty
-    public Object DynamicSize(){
+    public Object DynamicSize() {
         return UnityBannerSize.getDynamicSize(context);
     }
+
     @SimpleFunction
-    public Object NormalSize(){
+    public Object NormalSize() {
         return new UnityBannerSize(320, 50);
     }
+
     @Override
     public void onUnityAdsAdLoaded(String adUnitId) {
         AdLoaded(adUnitId);
@@ -211,9 +222,9 @@ public class UnityAds extends AndroidNonvisibleComponent implements IUnityAdsLoa
 
     @Override
     public void onUnityAdsShowComplete(String adUnitId, com.unity3d.ads.UnityAds.UnityAdsShowCompletionState state) {
-        if(state == com.unity3d.ads.UnityAds.UnityAdsShowCompletionState.SKIPPED){
+        if (state == com.unity3d.ads.UnityAds.UnityAdsShowCompletionState.SKIPPED) {
             AdShowSkipped(adUnitId);
-        }else{
+        } else {
             AdShowCompleted(adUnitId);
         }
     }
